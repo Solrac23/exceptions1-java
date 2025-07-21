@@ -4,9 +4,9 @@ package application;
 import model.entities.Reservation;
 import model.exceptions.DomainException;
 
-import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
 public class Main {
@@ -34,7 +34,7 @@ public class Main {
 
       reservation.updateDate(checkIn, checkOut);
       System.out.print("Reservation: " + reservation);
-    }catch (DateTimeException e){
+    }catch (DateTimeParseException e){
       System.out.println("Invalid date format");
     }catch (DomainException e){
       System.out.println("Error in reservation: " + e.getMessage());
