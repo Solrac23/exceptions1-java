@@ -2,7 +2,9 @@ package application;
 
 
 import model.entities.Reservation;
+import model.exceptions.DomainException;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
@@ -11,18 +13,15 @@ public class Main {
   public static void main(String[] args) {
     Scanner sc = new Scanner(System.in);
     DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    LocalDate now = LocalDate.now();
 
-    System.out.print("Room number: ");
-    int roomNumber = sc.nextInt();
-    System.out.print("Check-in date (dd/MM/yyyy): ");
-    LocalDate checkIn = LocalDate.parse(sc.next(), fmt);
-    System.out.print("Check-out date (dd/MM/yyyy): ");
-    LocalDate checkOut = LocalDate.parse(sc.next(), fmt);
+    try {
+      System.out.print("Room number: ");
+      int roomNumber = sc.nextInt();
+      System.out.print("Check-in date (dd/MM/yyyy): ");
+      LocalDate checkIn = LocalDate.parse(sc.next(), fmt);
+      System.out.print("Check-out date (dd/MM/yyyy): ");
+      LocalDate checkOut = LocalDate.parse(sc.next(), fmt);
 
-    if (!checkOut.isAfter(checkIn)){
-      System.out.println("Error in reservation: Check-out date must be after check-in date");
-    } else {
       Reservation reservation = new Reservation(roomNumber, checkIn, checkOut);
       System.out.println("Reservation: " + reservation);
 
@@ -33,13 +32,14 @@ public class Main {
       System.out.print("Check-out date (dd/MM/yyyy): ");
       checkOut = LocalDate.parse(sc.next(), fmt);
 
-      String error = reservation.updateDate(checkIn, checkOut);
-      if (error != null){
-        System.out.println("Error in reservation: " + error);
-      }
-      else {
-        System.out.print("Reservation: " + reservation);
-      }
+      reservation.updateDate(checkIn, checkOut);
+      System.out.print("Reservation: " + reservation);
+    }catch (DateTimeException e){
+      System.out.println("Invalid date format");
+    }catch (DomainException e){
+      System.out.println("Error in reservation: " + e.getMessage());
+    } catch (RuntimeException e) {
+      System.out.println("Unexpected error!");;
     }
 
 
